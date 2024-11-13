@@ -1,0 +1,14 @@
+
+<div class="container">
+  <div *ngFor="let item of menuItems">
+    <div>{{item}}</div>
+  </div>
+
+  <p-accordion>
+    Menu 1
+  </p-accordion>
+
+
+  <button (click)="closeSidebar($event)">close</button>
+
+</div>

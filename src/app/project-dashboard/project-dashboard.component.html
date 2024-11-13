@@ -1,0 +1,60 @@
+
+  <div >
+    <mat-sidenav-container>
+      <mat-sidenav-content class="container">
+        <div>
+          <button class="menu-button" mat-raised-button style="color: black" (click)="toggleRequest()">
+            <img style="color: black;" src="assets/menu_24dp_E8EAED.svg">
+          </button>
+
+          <button class="menu-button" mat-raised-button style="color: orange; float:right" (click)="newProject()">
+            Create New
+          </button>
+        </div>
+        <div class="row cards-container">
+
+          <project-card style="cursor: pointer !important;"></project-card>
+
+          <div class="card-item">
+            <mat-card class="example-card" appearance="outlined">
+              <mat-card-header>
+                <mat-card-title-group>
+                  <mat-card-title>Shiba Inu</mat-card-title>
+                  <mat-card-subtitle>Medium</mat-card-subtitle>
+<!--                  <img mat-card-md-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Image of a Shiba Inu">-->
+                </mat-card-title-group>
+              </mat-card-header>
+              <mat-card-content>
+                This will be some text
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <div class="card-item">
+            <mat-card class="example-card" appearance="outlined">
+              <mat-card-header>
+                <mat-card-title-group>
+                  <mat-card-title>Shiba Inu</mat-card-title>
+                  <mat-card-subtitle>Medium</mat-card-subtitle>
+<!--                  <img mat-card-md-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Image of a Shiba Inu">-->
+                </mat-card-title-group>
+              </mat-card-header>
+              <mat-card-content>
+                This will be some text
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+
+    <mat-sidenav #sidenav1
+                 mode="over"
+                 position="start"
+                 class="sidenav"
+                 [(opened)]="sideNav"
+                 [disableClose]="true"
+                 (openedChange)="sidenavOpenedChange($event)">
+      <app-menu (closeSidebarOut)="toggleRequest()"></app-menu>
+    </mat-sidenav>
+  </div>

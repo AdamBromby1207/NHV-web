@@ -1,0 +1,199 @@
+@mixin placeholder-color($color) {
+  &::-webkit-input-placeholder {
+    color: $color;
+  }
+  &::-moz-placeholder {
+    color: $color;
+  }
+  &:-ms-input-placeholder {
+    color: $color;
+  }
+  &:-moz-placeholder {
+    color: $color;
+  }
+}
+
+@mixin margin($direction, $value, $unit: px) {
+  @if $direction == top {
+    margin-top: #{$value}#{$unit};
+  } @else if $direction == right {
+    margin-right: #{$value}#{$unit};
+  } @else if $direction == bottom {
+    margin-bottom: #{$value}#{$unit};
+  } @else if $direction == left {
+    margin-left: #{$value}#{$unit};
+  } @else {
+    @warn "Invalid direction '#{$direction}'. Expected 'top', 'right', 'bottom', or 'left'.";
+  }
+}
+
+@mixin generate-margin-classes($start: 1, $end: 32, $unit: px) {
+  @for $i from $start through $end {
+    .mt-#{$i} {
+      @include margin(top, $i, $unit);
+    }
+    .mr-#{$i} {
+      @include margin(right, $i, $unit);
+    }
+    .mb-#{$i} {
+      @include margin(bottom, $i, $unit);
+    }
+    .ml-#{$i} {
+      @include margin(left, $i, $unit);
+    }
+  }
+}
+
+@mixin padding($direction, $value, $unit: px) {
+  @if $direction == top {
+    padding-top: #{$value}#{$unit};
+  } @else if $direction == right {
+    padding-right: #{$value}#{$unit};
+  } @else if $direction == bottom {
+    padding-bottom: #{$value}#{$unit};
+  } @else if $direction == left {
+    padding-left: #{$value}#{$unit};
+  } @else {
+    padding: #{$value}#{$unit};  }
+}
+
+
+@mixin generate-padding-classes($start: 1, $end: 32, $unit: px) {
+  @for $i from $start through $end {
+    .pt-#{$i} {
+      @include padding(top, $i, $unit);
+    }
+    .pr-#{$i} {
+      @include padding(right, $i, $unit);
+    }
+    .pb-#{$i} {
+      @include padding(bottom, $i, $unit);
+    }
+    .pl-#{$i} {
+      @include padding(left, $i, $unit);
+    }
+    .p-#{$i} {
+      @include padding(all, $i, $unit);
+    }
+  }
+}
+
+@mixin font-size($value, $unit: px) {
+  font-size: #{$value}#{$unit};
+}
+
+@mixin generate-font-size-classes($start: 1, $end: 40, $unit: px) {
+  @for $i from $start through $end {
+    .fs-#{$i} {
+      @include font-size($i, $unit);
+    }
+  }
+}
+
+@mixin w($value, $unit: '%') {
+  width: #{$value}#{$unit};
+}
+
+@mixin generate-with-classes($start: 1, $end: 100, $unit: '%') {
+  @for $i from $start through $end {
+    .w-#{$i} {
+      @include w($i, $unit);
+    }
+  }
+}
+
+@mixin gap($value, $unit: px) {
+  gap: #{$value}#{$unit};
+}
+
+@mixin generate-gap-classes($start: 1, $end: 40, $unit: px) {
+  @for $i from $start through $end {
+    .gap-#{$i} {
+      @include gap($i, $unit);
+    }
+  }
+}
+
+@mixin btn(
+  $text-transform: capitalize,
+  $border: 1px solid var(--primary),
+  $font-weight: 400,
+  $border-radius: var(--sm-border-radius),
+  $btn-text-color: var(--white),
+  $btn-bg: var(--primary),
+  $padding1: 5px,
+  $padding2: 16px,
+  $base-fontsize: var(--base-fontsize),
+  $min-width: 75px
+) {
+  border-radius: $border-radius;
+  text-align: center;
+  color: $btn-text-color;
+  text-transform: $text-transform;
+  padding: $padding1 $padding2;
+  background: $btn-bg;
+  display: inline-block;
+  font-size: $base-fontsize;
+  font-weight: $font-weight;
+  cursor: pointer;
+  border: $border;
+  min-width: $min-width;
+  transition: all 0.1s;
+  &:focus {
+    box-shadow: none;
+  }
+  .p-button-label {
+    transition: none;
+    font-weight: 400;
+  }
+  em {
+    margin-right: 5px;
+    color: var(--primary);
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .icon-loading {
+    margin-right: 8px;
+    display: inline-block;
+    color: #b6bbc7;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: no-drop;
+  }
+}
+
+%ellips {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin link {
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--hover-primary);
+  }
+}
+
+// Generate margin classes with default unit px
+
+@include generate-margin-classes();
+@include generate-padding-classes();
+@include generate-font-size-classes();
+@include generate-with-classes();
+@include generate-gap-classes();
+// Generate margin classes with em unit
+// @include generate-margin-classes(1, 20, em);
+
+@mixin hover-styles($color) {
+  background-color: $color;
+  color: var(--white);
+  border-color: $color;
+}
+
+

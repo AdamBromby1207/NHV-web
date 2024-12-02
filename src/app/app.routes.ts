@@ -1,67 +1,64 @@
-import {Route, Routes} from '@angular/router';
+import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth.guard';
+import { ProjectOverviewComponent } from './features/projects/project-detail/overview/project-overview.component';
 
-export const routes: Route[] = [
+export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login-page',
-    pathMatch: 'full'
+    pathMatch: 'full',
+    redirectTo: 'projects'
   },
   {
-    path: '',
+    path: 'callback',
+    loadComponent: () => import('./components/auth-callback/auth-callback.component').then(m => m.AuthCallbackComponent)
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent)
+  },
+  {
+    path: 'projects',
+    canActivate: [authGuard],
     children: [
       {
-        path: 'login-page',
-        loadComponent: () =>
-          import('./login/login.component').then((c) => c.LoginComponent)
+        path: '',
+        loadComponent: () => import('./features/projects/project-dashboard/project-dashboard.component').then(m => m.ProjectDashboardComponent)
       },
       {
-        path: 'projects',
-        loadComponent: () =>
-          import('./project-dashboard/project-dashboard.component').then((c) => c.ProjectDashboardComponent),
-        children : [
-
-
-        ]
-      },
-      {
-        path: 'projectPage',
-        loadComponent: () => import('./project-dashboard/project-page/project-page.component').then((c) => c.ProjectPageComponent),
-        children : [
+        path: ':id',
+        loadComponent: () => import('./features/projects/project-page/project-page.component').then(m => m.ProjectPageComponent),
+        children: [
+          {
+            path: 'overview',
+            component: ProjectOverviewComponent
+          },
           {
             path: 'masterdr',
-            loadComponent: () =>
-              import('./master-document-register/master-document-register.component').then((c) => c.MasterDocumentRegisterComponent),
+            loadComponent: () => import('./master-document-register/master-document-register.component').then(m => m.MasterDocumentRegisterComponent)
           },
           {
             path: 'chart',
-            loadComponent: () =>
-              import('./chart-page/chart-page.component').then((c) => c.ChartPageComponent),
+            loadComponent: () => import('./chart-page/chart-page.component').then(m => m.ChartPageComponent)
           },
           {
             path: 'labour',
-            loadComponent: () =>
-              import('./labour/labour.component').then((c) => c.LabourComponent),
+            loadComponent: () => import('./labour/labour.component').then(m => m.LabourComponent)
           },
           {
             path: 'docupload',
-            loadComponent: () =>
-              import('./shared/document-upload/document-upload.component').then((c) => c.DocumentUploadComponent),
+            loadComponent: () => import('./shared/document-upload/document-upload.component').then(m => m.DocumentUploadComponent)
           },
           {
             path: 'TqRegister',
-            loadComponent: () =>
-              import('./tq-register/tq-register.component').then((c) => c.TqRegisterComponent),
+            loadComponent: () => import('./tq-register/tq-register.component').then(m => m.TqRegisterComponent)
           },
+          {
+            path: '',
+            redirectTo: 'overview',
+            pathMatch: 'full'
+          }
         ]
-      },
-      {
-        path: 'labour',
-        loadComponent: () => import('./labour/labour.component').then((c) => c.LabourComponent)
-      },
-      // {
-      //   path: 'admin',
-      //   loadComponent: () => import('').then((c) => c.AdminComponent)
-      // }
+      }
     ]
   }
 ];

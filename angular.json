@@ -28,7 +28,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "./node_modules/@syncfusion/ej2-angular-gantt/styles/material.css"
             ],
             "scripts": []
           },
@@ -89,7 +90,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "./node_modules/@syncfusion/ej2-angular-gantt/styles/material.css"
             ],
             "scripts": []
           }

@@ -1,3 +1,15 @@
-<ejs-gantt>
-
-</ejs-gantt>
+<div class="p-4">
+  <h2 class="text-xl font-bold mb-4">Project Timeline</h2>
+  <ejs-gantt 
+    [dataSource]="data"
+    [taskFields]="taskFields"
+    [splitterSettings]="splitterSettings"
+    height="450px"
+    [allowSelection]="true"
+    [allowSorting]="true"
+    [allowResizing]="true"
+    [allowReordering]="true"
+    [highlightWeekends]="true"
+    [toolbar]="['Add', 'Edit', 'Update', 'Delete', 'Cancel', 'ExpandAll', 'CollapseAll', 'Search']">
+  </ejs-gantt>
+</div>

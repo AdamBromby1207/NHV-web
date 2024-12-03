@@ -14,7 +14,8 @@ export class BaseApiService {
 
   protected getHeaders(): HttpHeaders {
     return new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
     });
   }
 
@@ -26,39 +27,51 @@ export class BaseApiService {
       errorMessage = `Error: ${error.error.message}`;
     } else {
       // Server-side error
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+      if (error.status === 0) {
+        errorMessage = 'Unable to connect to the API. Please check if the server is running and CORS is properly configured.';
+      } else {
+        errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+      }
     }
     
-    console.error(errorMessage);
+    console.error('API Error:', errorMessage, error);
     return throwError(() => new Error(errorMessage));
   }
 
   protected get<T>(endpoint: string): Observable<T> {
-    return this.http.get<T>(`${this.apiUrl}/${endpoint}`, { headers: this.getHeaders() })
-      .pipe(
-        retry(1),
-        catchError(this.handleError)
-      );
+    return this.http.get<T>(`${this.apiUrl}/${endpoint}`, {
+      headers: this.getHeaders(),
+      withCredentials: true
+    }).pipe(
+      retry(1),
+      catchError(this.handleError)
+    );
   }
 
   protected post<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.post<T>(`${this.apiUrl}/${endpoint}`, data, { headers: this.getHeaders() })
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.post<T>(`${this.apiUrl}/${endpoint}`, data, {
+      headers: this.getHeaders(),
+      withCredentials: true
+    }).pipe(
+      catchError(this.handleError)
+    );
   }
 
   protected put<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.put<T>(`${this.apiUrl}/${endpoint}`, data, { headers: this.getHeaders() })
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.put<T>(`${this.apiUrl}/${endpoint}`, data, {
+      headers: this.getHeaders(),
+      withCredentials: true
+    }).pipe(
+      catchError(this.handleError)
+    );
   }
 
   protected delete<T>(endpoint: string): Observable<T> {
-    return this.http.delete<T>(`${this.apiUrl}/${endpoint}`, { headers: this.getHeaders() })
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.delete<T>(`${this.apiUrl}/${endpoint}`, {
+      headers: this.getHeaders(),
+      withCredentials: true
+    }).pipe(
+      catchError(this.handleError)
+    );
   }
 }

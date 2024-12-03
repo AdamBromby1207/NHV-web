@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenav } from '@angular/material/sidenav';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-header',
@@ -21,7 +22,8 @@ import { MatSidenav } from '@angular/material/sidenav';
     MatToolbarModule,
     MatButtonModule,
     MatMenuModule,
-    MatIconModule
+    MatIconModule,
+    MatDividerModule
   ],
   template: `
     <mat-toolbar *ngIf="isAuthenticated$ | async" class="header-toolbar mat-elevation-z6" [style.background-color]="'black'" [style.color]="'white'">
@@ -45,12 +47,21 @@ import { MatSidenav } from '@angular/material/sidenav';
           <img *ngIf="(currentUser$ | async)?.picture"
                [src]="(currentUser$ | async)?.picture"
                class="avatar"
-               [alt]="(currentUser$ | async)?.name">
-          <span class="username">{{ (currentUser$ | async)?.given_name || (currentUser$ | async)?.name?.split(' ')[0] }}</span>
+               [alt]="(currentUser$ | async)?.name || ''">
+          <span class="username">{{ ((currentUser$ | async)?.given_name || ((currentUser$ | async)?.name || '').split(' ')[0]) }}</span>
           <mat-icon style="color: white">person</mat-icon>
         </button>
         
         <mat-menu #menu="matMenu">
+          <button mat-menu-item routerLink="/users">
+            <mat-icon style="color: white">people</mat-icon>
+            <span style="color: white">User Management</span>
+          </button>
+          <button mat-menu-item routerLink="/settings">
+            <mat-icon style="color: white">settings</mat-icon>
+            <span style="color: white">Settings</span>
+          </button>
+          <mat-divider style="border-color: rgba(255,255,255,0.12)"></mat-divider>
           <button mat-menu-item (click)="logout()">
             <mat-icon style="color: white">exit_to_app</mat-icon>
             <span style="color: white">Logout</span>

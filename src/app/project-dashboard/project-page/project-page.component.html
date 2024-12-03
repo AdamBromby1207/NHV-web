@@ -1,8 +1,51 @@
-<a href="index.html">Go back</a>
+<div class="project-page">
+  <div class="project-header">
+    <header-nav [navItems]="navItems"></header-nav>
+  </div>
 
-<div style="margin-bottom: 16px">
-<header-nav [navItems]="navItems"></header-nav>
+  <!-- Loading Spinner -->
+  <div class="loading-container" *ngIf="loading$ | async">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
 
+  <!-- Projects List -->
+  <div class="projects-container" *ngIf="!(loading$ | async)">
+    <div class="projects-grid">
+      <ng-container *ngFor="let project of projects$ | async">
+        <mat-card class="project-card" (click)="selectProject(project.id)">
+          <mat-card-header>
+            <mat-card-title>{{ project.name }}</mat-card-title>
+            <mat-card-subtitle>
+              Created: {{ project.createdDate | date }}
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{ project.description }}</p>
+            <div class="project-dates">
+              <span>Start: {{ project.startDate | date }}</span>
+              <span>End: {{ project.endDate | date }}</span>
+            </div>
+            <div class="project-status">
+              Status: {{ project.status }}
+            </div>
+          </mat-card-content>
+          <mat-card-actions align="end">
+            <button mat-button (click)="$event.stopPropagation(); updateProject(project)">
+              EDIT
+            </button>
+            <button mat-button color="warn" (click)="$event.stopPropagation(); deleteProject(project.id)">
+              DELETE
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </ng-container>
+    </div>
+
+    <!-- Add Project Button -->
+    <button mat-fab color="primary" class="add-project-button" (click)="createProject({})">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <router-outlet></router-outlet>
 </div>
-<!--<gantt-chart></gantt-chart>-->
-<router-outlet></router-outlet>

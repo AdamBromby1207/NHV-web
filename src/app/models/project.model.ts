@@ -1,22 +1,34 @@
 export interface Project {
   id: string;
   name: string;
-  description?: string;
-  createdById: string;
-  createdBy?: any;
-  createdDate: Date;
-  modifiedDate?: Date;
-  startDate?: Date;
-  endDate?: Date;
-  status?: string;
-  deleted?: boolean;
+  description: string;
+  startDate: Date;
+  endDate: Date;
+  tqRegisters: any[];
+  labour: any[];
+  jobs: any[];
+  tqRegisterId?: string;
+  documentRegistersId?: string;
+  tenderDocumentation?: string;
+  projectDocs?: string;
+  programAndProgress?: string;
+  reports?: string;
+  documentControl?: string;
+  handSDocs?: string;
+  testingAndComission?: string;
+  timeSheets?: string;
+  oandMDocs?: string;
+  commercialsAndFinanceControl?: string;
 }
 
 export interface CreateProjectDto {
   name: string;
-  description?: string;
-  startDate?: Date;
-  endDate?: Date;
+  description: string;
+  startDate: Date;
+  endDate: Date;
+  tqRegisters: any[];
+  labour: any[];
+  jobs: any[];
 }
 
 export interface UpdateProjectDto {
@@ -25,5 +37,7 @@ export interface UpdateProjectDto {
   description?: string;
   startDate?: Date;
   endDate?: Date;
-  status?: string;
+  tqRegisters?: any[];
+  labour?: any[];
+  jobs?: any[];
 }

@@ -43,8 +43,27 @@ export const routes: Routes = [
             component: ProjectOverviewComponent
           },
           {
-            path: 'masterdr',
-            loadComponent: () => import('./master-document-register/master-document-register.component').then(m => m.MasterDocumentRegisterComponent)
+            path: 'docs',
+            loadComponent: () => import('./features/documents/docs-page/docs-page.component').then(m => m.DocsPageComponent),
+            children: [
+              {
+                path: '',
+                redirectTo: 'project',
+                pathMatch: 'full'
+              },
+              {
+                path: 'project',
+                loadComponent: () => import('./features/documents/project-docs/project-docs.component').then(m => m.ProjectDocsComponent)
+              },
+              {
+                path: 'health-safety',
+                loadComponent: () => import('./features/documents/health-safety-docs/health-safety-docs.component').then(m => m.HealthSafetyDocsComponent)
+              },
+              {
+                path: 'technical',
+                loadComponent: () => import('./tq-register/tq-register.component').then(m => m.TqRegisterComponent)
+              }
+            ]
           },
           {
             path: 'chart',
@@ -53,14 +72,6 @@ export const routes: Routes = [
           {
             path: 'labour',
             loadComponent: () => import('./labour/labour.component').then(m => m.LabourComponent)
-          },
-          {
-            path: 'docupload',
-            loadComponent: () => import('./shared/document-upload/document-upload.component').then(m => m.DocumentUploadComponent)
-          },
-          {
-            path: 'TqRegister',
-            loadComponent: () => import('./tq-register/tq-register.component').then(m => m.TqRegisterComponent)
           },
           {
             path: '',

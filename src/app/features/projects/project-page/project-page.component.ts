@@ -67,11 +67,9 @@ export class ProjectPageComponent implements OnInit {
   projectTitle = 'Project Details'; // This should be loaded from your project service
   navLinks = [
     { path: 'overview', label: 'Overview' },
-    { path: 'masterdr', label: 'Master Document Register' },
+    { path: 'docs', label: 'Docs' },
     { path: 'chart', label: 'Chart' },
-    { path: 'labour', label: 'Labour' },
-    { path: 'docupload', label: 'Document Upload' },
-    { path: 'TqRegister', label: 'TQ Register' }
+    { path: 'labour', label: 'Labour' }
   ];
 
   constructor(

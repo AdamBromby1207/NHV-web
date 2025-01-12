@@ -7,6 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CreateProjectDto } from '../../../../models/project.model';
+import { ProjectService } from '../../../../services/project.service';
 
 @Component({
   selector: 'app-new-project-dialog',
@@ -27,8 +29,8 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
       <form [formGroup]="projectForm" class="project-form">
         <mat-form-field appearance="outline">
           <mat-label>Project Name</mat-label>
-          <input matInput formControlName="title" placeholder="Enter project name">
-          <mat-error *ngIf="projectForm.get('title')?.hasError('required')">
+          <input matInput formControlName="name" placeholder="Enter project name">
+          <mat-error *ngIf="projectForm.get('name')?.hasError('required')">
             Project name is required
           </mat-error>
         </mat-form-field>
@@ -37,7 +39,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
           <mat-label>Description</mat-label>
           <textarea matInput formControlName="description" placeholder="Enter project description" rows="3"></textarea>
           <mat-error *ngIf="projectForm.get('description')?.hasError('required')">
-            Description is required
+            Project description is required
           </mat-error>
         </mat-form-field>
 
@@ -56,6 +58,9 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
           <input matInput [matDatepicker]="endPicker" formControlName="endDate">
           <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
           <mat-datepicker #endPicker></mat-datepicker>
+          <mat-error *ngIf="projectForm.get('endDate')?.hasError('required')">
+            End date is required
+          </mat-error>
         </mat-form-field>
       </form>
     </mat-dialog-content>
@@ -72,19 +77,10 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
       flex-direction: column;
       gap: 16px;
       min-width: 400px;
-      padding: 16px 0;
     }
-
+    
     mat-form-field {
       width: 100%;
-    }
-
-    textarea {
-      min-height: 100px;
-    }
-
-    mat-dialog-actions {
-      padding: 16px 0;
     }
   `]
 })
@@ -92,20 +88,44 @@ export class NewProjectDialogComponent {
   projectForm: FormGroup;
 
   constructor(
-    private fb: FormBuilder,
-    private dialogRef: MatDialogRef<NewProjectDialogComponent>
+    private dialogRef: MatDialogRef<NewProjectDialogComponent>,
+    private formBuilder: FormBuilder,
+    private projectService: ProjectService
   ) {
-    this.projectForm = this.fb.group({
-      title: ['', Validators.required],
+    this.projectForm = this.formBuilder.group({
+      name: ['', Validators.required],
       description: ['', Validators.required],
       startDate: [new Date(), Validators.required],
-      endDate: ['']
+      endDate: [new Date(), Validators.required]
     });
   }
 
   onSubmit(): void {
     if (this.projectForm.valid) {
-      this.dialogRef.close(this.projectForm.value);
+      const formValue = this.projectForm.value;
+      const projectData: CreateProjectDto = {
+        ...formValue,
+        startDate: new Date(formValue.startDate),
+        endDate: new Date(formValue.endDate),
+        tqRegisters: [],
+        labour: [],
+        jobs: []
+      };
+      
+      console.log('Sending project data:', projectData);
+      
+      this.projectService.createProject(projectData).subscribe({
+        next: (project) => {
+          console.log('Project created successfully:', project);
+          this.dialogRef.close(project);
+        },
+        error: (error) => {
+          console.error('Error creating project:', error);
+          if (error.error) {
+            console.error('Error details:', error.error);
+          }
+        }
+      });
     }
   }
 

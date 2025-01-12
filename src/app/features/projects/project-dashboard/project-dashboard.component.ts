@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -6,14 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NewProjectDialogComponent } from '../components/new-project-dialog/new-project-dialog.component';
-
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  status: string;
-  progress: number;
-}
+import { ProjectService } from '../../../services/project.service';
+import { Project } from '../../../models/project.model';
 
 @Component({
   selector: 'app-project-dashboard',
@@ -38,29 +32,22 @@ interface Project {
       
       <div class="projects-grid">
         <mat-card 
-          *ngFor="let project of mockProjects" 
+          *ngFor="let project of projects" 
           class="project-card mat-elevation-z2"
           (click)="navigateToProject(project.id)"
           [style.cursor]="'pointer'"
         >
           <mat-card-header>
-            <mat-card-title>{{ project.title }}</mat-card-title>
-            <mat-card-subtitle>Status: {{ project.status }}</mat-card-subtitle>
+            <mat-card-title>{{ project.name }}</mat-card-title>
           </mat-card-header>
           
           <mat-card-content>
             <p>{{ project.description }}</p>
-            <div class="progress-info">
-              <span>Progress: {{ project.progress }}%</span>
+            <div class="project-dates">
+              <div *ngIf="project.startDate">Start: {{ project.startDate | date }}</div>
+              <div *ngIf="project.endDate">End: {{ project.endDate | date }}</div>
             </div>
           </mat-card-content>
-          
-          <mat-card-actions>
-            <button mat-button color="primary" (click)="navigateToProject(project.id); $event.stopPropagation();">
-              <mat-icon>visibility</mat-icon>
-              View Details
-            </button>
-          </mat-card-actions>
         </mat-card>
       </div>
     </div>
@@ -68,73 +55,68 @@ interface Project {
   styles: [`
     .dashboard-container {
       padding: 24px;
-      max-width: 1800px;
-      margin: 0 auto;
-      min-height: calc(100vh - 64px);
     }
-
+    
     .dashboard-header {
-      margin-bottom: 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 24px;
     }
-
-    .dashboard-header h1 {
-      font-size: 24px;
-      font-weight: 500;
-      margin: 0;
-      color: rgba(0, 0, 0, 0.87);
-    }
-
+    
     .projects-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 24px;
-      align-items: start;
     }
-
+    
     .project-card {
       height: 100%;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      transition: transform 0.2s;
     }
-
+    
     .project-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transform: translateY(-4px);
     }
-
-    .project-card mat-card-content {
-      flex-grow: 1;
-    }
-
-    .progress-info {
+    
+    mat-card-content {
       margin-top: 16px;
+    }
+    
+    .project-dates {
+      margin-top: 10px;
       color: rgba(0, 0, 0, 0.6);
     }
-
-    mat-card-actions {
-      padding: 16px;
-      display: flex;
-      justify-content: flex-start;
-    }
-
-    mat-icon {
-      margin-right: 8px;
-    }
-
-    button mat-icon {
-      margin-right: 8px;
+    
+    .project-budget {
+      margin-top: 10px;
+      font-weight: bold;
     }
   `]
 })
-export class ProjectDashboardComponent {
+export class ProjectDashboardComponent implements OnInit {
+  projects: Project[] = [];
+
   constructor(
-    private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private projectService: ProjectService,
+    private router: Router
   ) {}
+
+  ngOnInit(): void {
+    this.loadProjects();
+  }
+
+  loadProjects(): void {
+    this.projectService.getProjects().subscribe({
+      next: (projects) => {
+        this.projects = projects;
+      },
+      error: (error) => {
+        console.error('Error loading projects:', error);
+      }
+    });
+  }
 
   openNewProjectDialog(): void {
     const dialogRef = this.dialog.open(NewProjectDialogComponent, {
@@ -143,54 +125,12 @@ export class ProjectDashboardComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // TODO: Handle new project creation
-        console.log('New project:', result);
-        // Add the new project to the list
-        // You'll want to dispatch an action to create the project in your backend
+        this.loadProjects();
       }
     });
   }
 
-  navigateToProject(projectId: number): void {
-    this.router.navigate(['/projects', projectId, 'overview']);
+  navigateToProject(id: string): void {
+    this.router.navigate(['/projects', id, 'overview']);
   }
-
-  // Mock data - replace with real data from service later
-  mockProjects: Project[] = [
-    {
-      id: 1,
-      title: 'Project Alpha',
-      description: 'A strategic initiative focused on infrastructure development and system optimization.',
-      status: 'In Progress',
-      progress: 45
-    },
-    {
-      id: 2,
-      title: 'Project Beta',
-      description: 'Implementation of new security protocols and compliance measures.',
-      status: 'Planning',
-      progress: 15
-    },
-    {
-      id: 3,
-      title: 'Project Gamma',
-      description: 'Customer experience enhancement through digital transformation.',
-      status: 'On Hold',
-      progress: 60
-    },
-    {
-      id: 4,
-      title: 'Project Delta',
-      description: 'Research and development of innovative solutions for emerging markets.',
-      status: 'Active',
-      progress: 30
-    },
-    {
-      id: 5,
-      title: 'Project Epsilon',
-      description: 'Modernization of legacy systems and data migration.',
-      status: 'In Review',
-      progress: 75
-    }
-  ];
 }

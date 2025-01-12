@@ -8,7 +8,7 @@ import { Project, CreateProjectDto, UpdateProjectDto } from '../models/project.m
   providedIn: 'root'
 })
 export class ProjectService extends BaseApiService {
-  private endpoint = 'api/projects';
+  private endpoint = 'Project';  // Changed from 'projects' to match the API route
 
   constructor(http: HttpClient) {
     super(http);

@@ -1,10 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { UserRole } from '../../../models/user-role.enum';
+import { Store } from '@ngrx/store';
+import { UserActions } from '../../../store/actions/user.actions';
 
 @Component({
   selector: 'app-create-user-dialog',
@@ -15,6 +19,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatSelectModule,
     ReactiveFormsModule
   ],
   template: `
@@ -37,6 +42,18 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
           <input matInput formControlName="name" required>
           <mat-error *ngIf="userForm.get('name')?.hasError('required')">
             Name is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Role</mat-label>
+          <mat-select formControlName="role" required>
+            <mat-option *ngFor="let role of roles" [value]="role">
+              {{role}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="userForm.get('role')?.hasError('required')">
+            Role is required
           </mat-error>
         </mat-form-field>
 
@@ -73,6 +90,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 })
 export class CreateUserDialogComponent {
   userForm: FormGroup;
+  roles = Object.values(UserRole);
+  private store = inject(Store)
 
   constructor(
     private fb: FormBuilder,
@@ -81,12 +100,14 @@ export class CreateUserDialogComponent {
     this.userForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       name: ['', Validators.required],
+      role: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(8)]]
     });
   }
 
   onSubmit() {
     if (this.userForm.valid) {
+      this.store.dispatch(UserActions.createUser({ user: this.userForm.value }));
       this.dialogRef.close(this.userForm.value);
     }
   }

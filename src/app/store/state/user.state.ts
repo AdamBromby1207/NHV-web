@@ -1,9 +1,11 @@
 import { BaseState } from './base.state';
+import { UserRole } from '../../models/user-role.enum';
 
 export interface User {
   id: string;
   email: string;
   name: string;
+  role: UserRole;
   given_name?: string;
   picture?: string;
   auth0Id: string;
